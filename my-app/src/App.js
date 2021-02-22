@@ -6,6 +6,8 @@ import axios from 'axios';
 import GridLayout from 'react-grid-layout';
 import ReactGridLayout from 'react-grid-layout';
 import Card from "react-bootstrap/Card";
+import CardDeck from "react-bootstrap/CardDeck";
+
 
 // Use a class component, 
 // because a functional component doesn’t have its own state
@@ -92,10 +94,11 @@ export default class App extends React.Component {
         {dataGrid}
       </GridLayout> */}
 
-      {items_with_gifs.map((card) => {
-          return <CustomCard key={card.position} title={card.title} gif={card.gif}/>;
-        })}
-
+      <CardDeck>
+        {items_with_gifs.map((card) => {
+            return <CustomCard key={card.position} title={card.title} gif={card.gif}/>;
+          })}
+      </CardDeck>
       </div>
       
 
@@ -107,10 +110,10 @@ export default class App extends React.Component {
     return (
       <div>
       <Card style={{ width: '18rem' }}>
-        <Card.Img src={props.gif} variant="top" />
         <Card.Body>
           <Card.Title>{props.title}</Card.Title>
         </Card.Body>
+        <Card.Img src={props.gif} variant="top" />
       </Card>
       </div>
     );
