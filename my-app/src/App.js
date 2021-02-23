@@ -7,12 +7,37 @@ import GridLayout from 'react-grid-layout';
 import ReactGridLayout from 'react-grid-layout';
 import Card from "react-bootstrap/Card";
 import CardDeck from "react-bootstrap/CardDeck";
+import ReactModal from 'react-modal';
 
+
+const customStyles = {
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)'
+  }
+};
+ 
 
 // Use a class component, 
 // because a functional component doesn’t have its own state
 export default class App extends React.Component {
-  state = {data: null, items: []};
+
+  constructor () {
+    super();
+    this.state = {
+      data: null, 
+      items: [],
+      showModal: false,
+      dataModal: "",
+    };
+    
+    this.handleOpenModal = this.handleOpenModal.bind(this);
+    this.handleCloseModal = this.handleCloseModal.bind(this);
+  }
 
   // componentDidMount() {
   //   axios.get(`http://localhost:8000/`)
@@ -22,6 +47,17 @@ export default class App extends React.Component {
   //  })
   // }
 
+  handleOpenModal () {
+    this.setState({ showModal: true });
+  }
+  
+  handleCloseModal () {
+    this.setState({ showModal: false });
+  }
+
+  getModal = data => {
+    this.setState({ showModal: true, dataModal: data });
+  };
 
   componentDidMount(){
     this.getData();
@@ -96,9 +132,22 @@ export default class App extends React.Component {
 
       <CardDeck>
         {items_with_gifs.map((card) => {
-            return <CustomCard key={card.position} title={card.title} gif={card.gif}/>;
+            return (
+              <CustomCard key={card.position} title={card.title} gif={card.gif} clicked={() => this.getModal(card.gif)}/>
+            );
           })}
       </CardDeck>
+
+      <ReactModal 
+          style={customStyles}
+          isOpen={this.state.showModal}
+          contentLabel="onRequestClose Example"
+          onRequestClose={this.handleCloseModal}
+          overlayClassName="Overlay"
+          shouldCloseOnOverlayClick={true}
+      >
+        <img src={this.state.dataModal}></img>
+      </ReactModal>
       </div>
       
 
@@ -108,8 +157,8 @@ export default class App extends React.Component {
 
   const CustomCard = (props) => {
     return (
-      <div>
-      <Card style={{ width: '18rem' }}>
+      <div class="col-md-4 col-xs-6">
+      <Card style={{ width: '18rem' }} onClick={props.clicked}>
         <Card.Body>
           <Card.Title>{props.title}</Card.Title>
         </Card.Body>
