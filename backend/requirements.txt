@@ -1,0 +1,7 @@
+starlette
+asyncio
+asyncpg
+#uvicorn
+sqlalchemy
+psycopg2
+databases

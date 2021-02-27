@@ -65,13 +65,14 @@ export default class App extends React.Component {
 
   async getData(){
     try {
-      const res = await fetch("http://localhost:8000/get");
+      const res = await fetch("http://0.0.0.0:8000/get");
       const data = await res.json();
+      console.log(data);
       this.setState({
         items: data.cards.map(item => ({
-            title: item[1],
-            type: item[0],
-            position: item[2],
+            title: item.title,
+            type: item.type,
+            position: item.position,
         }))
       })
     } catch (err) {
@@ -124,7 +125,7 @@ export default class App extends React.Component {
 
     return (
       <div>
-      {/* <strong>Message</strong>: {message}<br/><br/> */}
+      <strong>Message</strong>: {message}<br/><br/>
       
       {/* <GridLayout className="layout" cols={3} rowHeight={4} width={1200}>
         {dataGrid}

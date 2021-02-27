@@ -1,0 +1,33 @@
+version: "3.8"
+services:
+  db:
+    build: ./database/
+    ports:
+        - "5432:5432"
+    networks:
+        - default
+  app :
+    build: ./backend/
+    container_name: backend-container
+    networks:
+        - default
+    depends_on: 
+        - db
+    ports:
+        - "8000:8000"
+    expose: 
+        - "8000"
+    command: sh -c './wait-for-postgres.sh db:5432 -- python main.py'
+    # environment: 
+    #   - POSTGRES_HOST=postgres_instance
+    #   - POSTGRES_PORT=5432
+    #   - POSTGRES_USER=postgres
+    #   - POSTGRES_PASSWORD=postgres_password
+    #   - POSTGRES_DB=postgres
+  frontend:
+    container_name: frontend-container
+    build:
+        context: ./frontend
+        dockerfile: Dockerfile
+    ports: 
+        - "3000:3000"
