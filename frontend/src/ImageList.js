@@ -47,24 +47,24 @@ const Image = ({ image, index, moveImage, clicked }) => {
 
   return (
     <Col md={4} xs={6}>
-        <div 
-            ref={ref}
-            style={{ opacity: isDragging ? 0 : 1 }}
-            className="file-item"
-        >
-            <Card style={{ width: '18rem' }} onClick={clicked}>
-                <Card.Body>
-                    <Card.Title>{image.title}</Card.Title>
-                </Card.Body>
-                {loaded ? null :
-                <Loader />
-                }
-                <Card.Img src={image.gif} variant="top" 
-                    onLoad={onLoad}
-                    style={loaded ? {} : {display: 'none'}}
-                />
-            </Card>
-        </div>
+      <div 
+          ref={ref}
+          style={{ opacity: isDragging ? 0 : 1 }}
+          className="file-item"
+      >
+        <Card style={{ width: '18rem' }} onClick={clicked}>
+          <Card.Body>
+              <Card.Title>{image.title}</Card.Title>
+          </Card.Body>
+          {loaded ? null :
+          <Loader />
+          }
+          <Card.Img src={image.gif} variant="top" 
+              onLoad={onLoad}
+              style={loaded ? {} : {display: 'none'}}
+          />
+        </Card>
+      </div>
     </Col>
   );
 
@@ -72,9 +72,8 @@ const Image = ({ image, index, moveImage, clicked }) => {
 
 const ImageList = ({ images, moveImage, passedFunction }) => {
 
-    return (
-        <div>
-    
+    return (    
+
         <CardDeck>
           {images.map((image, index) => {
               return (
@@ -88,8 +87,6 @@ const ImageList = ({ images, moveImage, passedFunction }) => {
               );
             })}
         </CardDeck>
-    
-        </div>
     
         )
 

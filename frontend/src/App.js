@@ -5,6 +5,7 @@ import React from 'react';
 import axios from 'axios';
 import ReactModal from 'react-modal';
 import Button from "react-bootstrap/Button"
+import { Container } from "react-bootstrap";
 
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from 'react-dnd-html5-backend'
@@ -134,28 +135,33 @@ export default class App extends React.Component {
     };
 
     return (
-      <div>
-      <strong>Message</strong>: {message}<br/><br/>
+      <React.Fragment>
+        <Container>
+          <strong>Message</strong>: {message}<br/><br/>
 
-      <Button onClick={this.handleClick} variant="primary" size="lg" block>
-        Save
-      </Button>
+          <Button onClick={this.handleClick} variant="primary" size="lg" block>
+            Save
+          </Button>
 
-      <DndProvider backend={HTML5Backend}>
-        <ImageList images={items_with_gifs} moveImage={moveImage} passedFunction = {this.getModal}/>
-      </DndProvider>
+          <DndProvider backend={HTML5Backend}>
+            <ImageList images={items_with_gifs} moveImage={moveImage} passedFunction = {this.getModal}/>
+          </DndProvider>
 
-      <ReactModal 
-          style={customStyles}
-          isOpen={this.state.showModal}
-          contentLabel="onRequestClose Example"
-          onRequestClose={this.handleCloseModal}
-          overlayClassName="Overlay"
-          ariaHideApp={false}
-      >
-        <img src={this.state.dataModal}></img>
-      </ReactModal>
-      </div>
+        </Container>
+        
+        <ReactModal 
+              style={customStyles}
+              isOpen={this.state.showModal}
+              contentLabel="onRequestClose Example"
+              onRequestClose={this.handleCloseModal}
+              // overlayClassName="Overlay"
+              ariaHideApp={false}
+              shouldCloseOnOverlayClick={true}
+          >
+            <img src={this.state.dataModal}></img>
+        </ReactModal>
+      </React.Fragment>
+
       
 
       )
