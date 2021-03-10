@@ -3,12 +3,13 @@
 
 import React from 'react';
 import axios from 'axios';
-import GridLayout from 'react-grid-layout';
-import ReactGridLayout from 'react-grid-layout';
-import Card from "react-bootstrap/Card";
-import CardDeck from "react-bootstrap/CardDeck";
 import ReactModal from 'react-modal';
+import Button from "react-bootstrap/Button"
 
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from 'react-dnd-html5-backend'
+import ImageList from "./ImageList";
+import update from "immutability-helper";
 
 const customStyles = {
   content : {
@@ -21,22 +22,22 @@ const customStyles = {
   }
 };
  
+ReactModal.setAppElement(document.getElementById('root'));
 
 // Use a class component, 
 // because a functional component doesn’t have its own state
+// Corrected: With the React 16.8 they let you use state and other React features without writing a class.
 export default class App extends React.Component {
 
-  constructor () {
-    super();
+  constructor (props) {
+    super(props);
     this.state = {
-      data: null, 
+      message: null, 
       items: [],
       showModal: false,
       dataModal: "",
     };
     
-    this.handleOpenModal = this.handleOpenModal.bind(this);
-    this.handleCloseModal = this.handleCloseModal.bind(this);
   }
 
   // componentDidMount() {
@@ -47,11 +48,11 @@ export default class App extends React.Component {
   //  })
   // }
 
-  handleOpenModal () {
+  handleOpenModal = () => {
     this.setState({ showModal: true });
   }
   
-  handleCloseModal () {
+  handleCloseModal = () => {
     this.setState({ showModal: false });
   }
 
@@ -59,13 +60,31 @@ export default class App extends React.Component {
     this.setState({ showModal: true, dataModal: data });
   };
 
-  componentDidMount(){
+  handleClick = async () => {
+    const requestOptions = {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(this.state.items)
+    };
+    console.log(requestOptions)
+
+    try {
+      const response = await fetch('http://localhost:8000/update', requestOptions);
+      const data = await response.json();
+      console.log(data)
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  componentDidMount() {
     this.getData();
   }
 
   async getData(){
     try {
-      const res = await fetch("http://0.0.0.0:8000/get");
+      // const res = await fetch("http://0.0.0.0:8000/get");
+      const res = await fetch("http://localhost:8000/get");
       const data = await res.json();
       console.log(data);
       this.setState({
@@ -82,62 +101,49 @@ export default class App extends React.Component {
 
   render() {
 
-    const data = this.state.data;
     const items = this.state.items;
 
     var message = "Default frontend message"
-    var cards = [];
 
-    console.log(data);
-    console.log(items);
-
-    // Assign the payload value if it exists
-    if (this.state.data !== null) {
-      message = this.state.data.message;
-      cards = this.state.data.cards;
+    if (this.state.message !== null) {
+      message = this.state.message;
     }
-
-
-    const imageList = [
-                'https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif', 
-                'https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif', 
-                'https://media.giphy.com/media/BzyTuYCmvSORqs1ABM/giphy.gif', 
-                'https://media.giphy.com/media/VbnUQpnihPSIgIXuZv/giphy.gif',
-                'https://media.giphy.com/media/3oriO0OEd9QIDdllqo/giphy.gif'
-              ];
-
-    let items_with_gifs = items.map((item, index) => {
-      return {
-          ...item,
-          gif: imageList[index]
-          
-      }
+    console.log(message)
+    const types = [
+      { type : 'bank-draft', gif: 'https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif'},
+      { type : 'invoice', gif: 'https://media.giphy.com/media/BzyTuYCmvSORqs1ABM/giphy.gif'},
+      { type : 'bill-of-lading', gif: 'https://media.giphy.com/media/VbnUQpnihPSIgIXuZv/giphy.gif'}
+    ]
+  
+    const items_with_gifs = items.map(item => {
+      const obj = types.find(o => item.type.lastIndexOf(o.type, 0) === 0);
+      return { ...item, ...obj };
     });
+
     console.log(items_with_gifs)
 
-    const dataGrid = items.map((item, index) => (
-      <div key={index}>
-        <div key={item.position}>{item.title}</div>
-        {/* <div key="b" data-grid={{x: 1, y: 0, w: 1, h: 2}}> {item} </div>
-        <div key="c" data-grid={{x: 2, y: 0, w: 1, h: 2}}> {item} </div> */}
-      </div>
-    ));
+    const moveImage = (dragIndex, hoverIndex) => {
+      const draggedImage = this.state.items[dragIndex];
+      const arrangedArray = update(this.state.items, {$splice: [
+        [dragIndex, 1],
+        [hoverIndex, 0, draggedImage]        
+      ]});
+      this.setState({ items: arrangedArray });
+
+     console.log(dragIndex, hoverIndex, this.state.items)
+    };
 
     return (
       <div>
       <strong>Message</strong>: {message}<br/><br/>
-      
-      {/* <GridLayout className="layout" cols={3} rowHeight={4} width={1200}>
-        {dataGrid}
-      </GridLayout> */}
 
-      <CardDeck>
-        {items_with_gifs.map((card) => {
-            return (
-              <CustomCard key={card.position} title={card.title} gif={card.gif} clicked={() => this.getModal(card.gif)}/>
-            );
-          })}
-      </CardDeck>
+      <Button onClick={this.handleClick} variant="primary" size="lg" block>
+        Save
+      </Button>
+
+      <DndProvider backend={HTML5Backend}>
+        <ImageList images={items_with_gifs} moveImage={moveImage} passedFunction = {this.getModal}/>
+      </DndProvider>
 
       <ReactModal 
           style={customStyles}
@@ -145,7 +151,7 @@ export default class App extends React.Component {
           contentLabel="onRequestClose Example"
           onRequestClose={this.handleCloseModal}
           overlayClassName="Overlay"
-          shouldCloseOnOverlayClick={true}
+          ariaHideApp={false}
       >
         <img src={this.state.dataModal}></img>
       </ReactModal>
@@ -155,16 +161,3 @@ export default class App extends React.Component {
       )
     }
   }
-
-  const CustomCard = (props) => {
-    return (
-      <div class="col-md-4 col-xs-6">
-      <Card style={{ width: '18rem' }} onClick={props.clicked}>
-        <Card.Body>
-          <Card.Title>{props.title}</Card.Title>
-        </Card.Body>
-        <Card.Img src={props.gif} variant="top" />
-      </Card>
-      </div>
-    );
-  }; 

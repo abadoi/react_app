@@ -40,7 +40,7 @@ async def insert_many():
     {"type": "bank-draft-2", "title" : "Bank Draft 2", "position": 3}, 
     {"type": "bill-of-lading-2", "title" : "Bill of Lading 2", "position": 4}, 
     ]
-    insert = "INSERT INTO cards(title, type, position) VALUES (:title, :type, :position)"
+    insert = "INSERT INTO cards(title, type, position) VALUES (:title, :type, :position) ON CONFLICT (position) DO NOTHING;"
     await database.execute_many(query=insert, values=data)
 
 
