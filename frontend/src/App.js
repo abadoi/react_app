@@ -11,6 +11,7 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import ImageList from "./ImageList";
 import update from "immutability-helper";
+import SaveButton from "./SaveButton";
 
 const customStyles = {
   content : {
@@ -82,7 +83,7 @@ export default class App extends React.Component {
     this.getData();
   }
 
-  async getData(){
+  async getData() {
     try {
       // const res = await fetch("http://0.0.0.0:8000/get");
       const res = await fetch("http://localhost:8000/get");
@@ -104,12 +105,13 @@ export default class App extends React.Component {
 
     const items = this.state.items;
 
-    var message = "Default frontend message"
+    // var message = "Default frontend message"
 
-    if (this.state.message !== null) {
-      message = this.state.message;
-    }
-    console.log(message)
+    // if (this.state.message !== null) {
+    //   message = this.state.message;
+    // }
+    // console.log(message)
+    
     const types = [
       { type : 'bank-draft', gif: 'https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif'},
       { type : 'invoice', gif: 'https://media.giphy.com/media/BzyTuYCmvSORqs1ABM/giphy.gif'},
@@ -137,11 +139,13 @@ export default class App extends React.Component {
     return (
       <React.Fragment>
         <Container>
-          <strong>Message</strong>: {message}<br/><br/>
+          {/* <strong>Message</strong>: {message}<br/><br/> */}
 
-          <Button onClick={this.handleClick} variant="primary" size="lg" block>
+          {/* <Button onClick={this.handleClick} variant="primary" size="lg" block>
             Save
-          </Button>
+          </Button> */}
+
+          <SaveButton handleClick={this.handleClick}/>
 
           <DndProvider backend={HTML5Backend}>
             <ImageList images={items_with_gifs} moveImage={moveImage} passedFunction = {this.getModal}/>

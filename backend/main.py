@@ -6,9 +6,10 @@ from databases import Database
 
 from starlette.applications import Starlette
 from starlette.endpoints import HTTPEndpoint
-from starlette.responses import JSONResponse
+from starlette.responses import JSONResponse, Response
 from starlette.middleware.cors import CORSMiddleware
 from starlette.routing import Route
+from starlette.requests import Request
 
 #TODO: 
 db_name='db-react'
@@ -35,14 +36,17 @@ database = Database(DATABASE_URL)
 
 async def insert_many():
     data = [{"type": "bank-draft", "title" : "Bank Draft", "position": 0}, 
-    {"type": "bill-of-lading", "title" : "Bill of Lading", "position": 1}, 
-    {"type": "invoice", "title" : "Invoice", "position": 2},  
-    {"type": "bank-draft-2", "title" : "Bank Draft 2", "position": 3}, 
-    {"type": "bill-of-lading-2", "title" : "Bill of Lading 2", "position": 4}, 
-    ]
+        {"type": "bill-of-lading", "title" : "Bill of Lading", "position": 1}, 
+        {"type": "invoice", "title" : "Invoice", "position": 2},  
+        {"type": "bank-draft-2", "title" : "Bank Draft 2", "position": 3}, 
+        {"type": "bill-of-lading-2", "title" : "Bill of Lading 2", "position": 4},
+    ] 
     insert = "INSERT INTO cards(title, type, position) VALUES (:title, :type, :position) ON CONFLICT (position) DO NOTHING;"
     await database.execute_many(query=insert, values=data)
 
+async def truncate():
+    query = "truncate cards;"
+    await database.execute(query=query)
 
 def homepage(request):
     msg = f"Hello Andrei from backend!"
@@ -62,9 +66,22 @@ async def list_cards(request):
     print(content)
     return JSONResponse({"cards": content}, status_code=200)
 
+async def update(request: Request):
+    try:
+        data = await request.json()
+    except JSONDecodeError:
+        raise HTTPException(status_code=400)
+    print(data)
+    await truncate()
+    insert = "INSERT INTO cards(title, type, position) VALUES (:title, :type, :position) ON CONFLICT (position) DO NOTHING;"
+    await database.execute_many(query=insert, values=data)
+    return JSONResponse({}, status_code=200)
+
+
 routes = [
     Route("/", endpoint=homepage),
     Route("/get", endpoint=list_cards, methods=["GET"]),
+    Route("/update", endpoint=update, methods=["POST"]),
 ]
 
 app = Starlette(
@@ -73,7 +90,7 @@ app = Starlette(
     on_shutdown=[database.disconnect])
     
 app.add_middleware(
-    CORSMiddleware, allow_origins=["*"], allow_headers=["*"], allow_methods=["*"]
+    CORSMiddleware, allow_origins=["*"], allow_headers=["*"], allow_methods=["*"], allow_credentials=True
 )
 
 
