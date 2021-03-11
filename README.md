@@ -8,10 +8,14 @@ I also created a python Starlette API which is consumed by the fronted, displayi
 
 ### Step 2
 
-For this step, I have created a PostegreSQL db and inserted the raw data. The backend is now fetching data directly from the DB and then sends it to the Frontend in json format. 5 different hard-coded gifs are mapped to the the data which is now displayed in the UI .
-
+For this step, I have created a PostegreSQL db and inserted the initial data on server start-up. The backend is now fetching data directly from the DB and then sends it to the Frontend in json format.
 
 ### Step 3
+
+Design and implement the front-end.
+   - loads the content recieved as Json from the back-end as 5 cards.
+   - assigns a gif image for every type of card (3 different types).
+   - re order the cards and save the new order into the PostgresDB such as the new order is displayed when the page reloads.
 
 **App** component is a class based component that contains:
   - **SaveButton** component:
@@ -31,8 +35,9 @@ For this step, I have created a PostegreSQL db and inserted the raw data. The ba
 
 ### Step 4
 
-Containerize the entire system using Docker and docker-compose.
+Created a <code>docker-compose</code> file to start all the components as microservices: 
 - Created 3 different containers for: backend, frontend, postgres-db.
 - defined the start-up order of the db and backend container using an open-source script (source: https://docs.docker.com/compose/startup-order/)
+- use <code> docker-compose up --build </code> to start and build the containers
 
 
