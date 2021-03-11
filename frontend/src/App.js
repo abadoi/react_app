@@ -4,7 +4,6 @@
 import React from 'react';
 import axios from 'axios';
 import ReactModal from 'react-modal';
-import Button from "react-bootstrap/Button"
 import { Container } from "react-bootstrap";
 
 import { DndProvider } from "react-dnd";
@@ -42,14 +41,6 @@ export default class App extends React.Component {
     
   }
 
-  // componentDidMount() {
-  //   axios.get(`http://localhost:8000/`)
-  //   .then(response => this.setState({data:response.data}))  
-  //   .catch(function(error) {
-  //    console.log('Fetch error: ' + error.message);
-  //  })
-  // }
-
   handleOpenModal = () => {
     this.setState({ showModal: true });
   }
@@ -85,7 +76,6 @@ export default class App extends React.Component {
 
   async getData() {
     try {
-      // const res = await fetch("http://0.0.0.0:8000/get");
       const res = await fetch("http://localhost:8000/get");
       const data = await res.json();
       console.log(data);
@@ -105,13 +95,6 @@ export default class App extends React.Component {
 
     const items = this.state.items;
 
-    // var message = "Default frontend message"
-
-    // if (this.state.message !== null) {
-    //   message = this.state.message;
-    // }
-    // console.log(message)
-    
     const types = [
       { type : 'bank-draft', gif: 'https://media.giphy.com/media/3o6Zt481isNVuQI1l6/giphy.gif'},
       { type : 'invoice', gif: 'https://media.giphy.com/media/BzyTuYCmvSORqs1ABM/giphy.gif'},
@@ -139,12 +122,6 @@ export default class App extends React.Component {
     return (
       <React.Fragment>
         <Container>
-          {/* <strong>Message</strong>: {message}<br/><br/> */}
-
-          {/* <Button onClick={this.handleClick} variant="primary" size="lg" block>
-            Save
-          </Button> */}
-
           <SaveButton handleClick={this.handleClick}/>
 
           <DndProvider backend={HTML5Backend}>
@@ -158,7 +135,6 @@ export default class App extends React.Component {
               isOpen={this.state.showModal}
               contentLabel="onRequestClose Example"
               onRequestClose={this.handleCloseModal}
-              // overlayClassName="Overlay"
               ariaHideApp={false}
               shouldCloseOnOverlayClick={true}
           >

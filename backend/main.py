@@ -2,6 +2,7 @@ import uvicorn
 import psycopg2
 import asyncio
 import sqlalchemy
+import os
 from databases import Database
 
 from starlette.applications import Starlette
@@ -11,12 +12,12 @@ from starlette.middleware.cors import CORSMiddleware
 from starlette.routing import Route
 from starlette.requests import Request
 
-#TODO: 
-db_name='db-react'
-db_user='andreibadoi'
-db_pass='pass'
-db_host='db'
-db_port='5432'
+
+db_name = os.environ["POSTGRES_DB"]
+db_user = os.environ["POSTGRES_USER"]
+db_pass = os.environ["POSTGRES_PASSWORD"]
+db_host = os.environ["POSTGRES_HOST"]
+db_port = os.environ["POSTGRES_PORT"]
 db_string = 'postgres://{}:{}@{}:{}/{}'.format(db_user, db_pass, db_host, db_port, db_name)
 
 DATABASE_URL = db_string 
