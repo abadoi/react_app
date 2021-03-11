@@ -12,10 +12,21 @@ For this step, I have created a PostegreSQL db and inserted the raw data. The ba
 
 
 ### Step 3
-In progress...
-- Working on the frontend side to be able to change the position of the cards
 
-For this step we are talking about refining the UI and adding the extra-needed features.
+**App** component is a class based component that contains:
+  - **SaveButton** component:
+    - functional component using React Hooks
+    - has a fade animation to give feedback to the user that the button has been pressed
+    - sends a POST request to the server with the re arranged cards.
+  - **ImageList** component:
+    - functional component using React Hooks
+    - contains **Image** component:
+      - uses a hook for drag-n-drop 
+      - another hook for the placeholder spinner that is displayed while the gif is loading
+  - **ReactModal** component:
+    - onClick event that opens the gif in the centre of the screen
+    - closes on ESC
+
 
 
 ### Step 4
