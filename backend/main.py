@@ -97,6 +97,4 @@ app.add_middleware(
 
 if __name__ == "__main__":
     print('Hello. Application started')
-    # connect(db_name='db-react', db_user='andreibadoi', db_pass='pass', db_host='db', db_port='5432', table_name='cards')
-    # create_table(table_name= "cards", dbname="db-react", user="andreibadoi")
     uvicorn.run(app, host="0.0.0.0", port=8000)
